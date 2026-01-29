@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal | EduPrime</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <i class="ph-fill ph-graduation-cap"></i> <span>Abhyaas</span>
+    </div>
+
+    <nav class="menu">
+        <div class="menu-category">MAIN</div>
+
+        <a onclick="switchView('dashboard', this)" class="nav-link active">
+            <i class="ph ph-squares-four"></i> Dashboard
+        </a>
+
+        <a onclick="switchView('classes', this)" class="nav-link">
+            <i class="ph ph-users-three"></i> My Classes
+        </a>
+
+        <a onclick="switchView('attendance', this)" class="nav-link">
+            <i class="ph ph-check-circle"></i> Attendance
+        </a>
+
+        <a onclick="switchView('grading', this)" class="nav-link">
+            <i class="ph ph-exam"></i> Grading
+        </a>
+    </nav>
+
+    <div class="user-profile">
+        <img src="https://ui-avatars.com/api/?name=Ananya+Rao&background=10B981&color=fff">
+        <div>
+            <h4>Ms. Ananya Rao</h4>
+            <p>Mathematics Dept.</p>
+        </div>
+    </div>
+</aside>
+
+<main class="main-content">
+
+<header class="top-bar">
+    <div class="search-bar">
+        <i class="ph ph-magnifying-glass"></i>
+        <input type="text" placeholder="Search student...">
+    </div>
+    <button class="icon-btn">
+        <i class="ph ph-bell"></i><span class="badge">2</span>
+    </button>
+</header>
+
+<!-- ================= DASHBOARD ================= -->
+<section id="dashboard" class="view-section active">
+    <div class="page-header">
+        <h2>Welcome back, Ananya!</h2>
+        <button class="btn-primary" onclick="openModal('assignmentModal')">
+            + Create Assignment
+        </button>
+    </div>
+
+    <div class="grid-container">
+        <div class="card">
+            <div class="card-icon primary"><i class="ph ph-users"></i></div>
+            <div class="card-info">
+                <h3>Total Students</h3>
+                <h1>142</h1>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-icon warning"><i class="ph ph-notebook"></i></div>
+            <div class="card-info">
+                <h3>Pending Grades</h3>
+                <h1>12</h1>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-icon success"><i class="ph ph-calendar-check"></i></div>
+            <div class="card-info">
+                <h3>Classes Today</h3>
+                <h1>4</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Today's Schedule</h3>
+        <table class="datatable">
+            <thead>
+                <tr><th>Time</th><th>Class</th><th>Subject</th><th>Room</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>09:00 AM</td>
+                    <td>Class 10-A</td>
+                    <td>Maths</td>
+                    <td>Room 101</td>
+                    <td><button class="btn-sm">Start</button></td>
+                </tr>
+                <tr>
+                    <td>11:00 AM</td>
+                    <td>Class 9-B</td>
+                    <td>Physics</td>
+                    <td>Lab 2</td>
+                    <td><button class="btn-sm">Start</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ================= MY CLASSES ================= -->
+<section id="classes" class="view-section">
+    <div class="page-header">
+        <h2>My Classes</h2>
+    </div>
+
+    <div class="grid-container">
+        <div class="card">
+            <h3>Class 10-A</h3>
+            <p><strong>Subject:</strong> Mathematics</p>
+            <p><strong>Students:</strong> 45</p>
+            <p><strong>Schedule:</strong> Mon–Fri | 9:00 AM</p>
+            <button class="btn-sm">View Students</button>
+        </div>
+
+        <div class="card">
+            <h3>Class 9-B</h3>
+            <p><strong>Subject:</strong> Physics</p>
+            <p><strong>Students:</strong> 38</p>
+            <p><strong>Schedule:</strong> Mon–Wed | 11:00 AM</p>
+            <button class="btn-sm">View Students</button>
+        </div>
+
+        <div class="card">
+            <h3>Class 8-C</h3>
+            <p><strong>Subject:</strong> Mathematics</p>
+            <p><strong>Students:</strong> 29</p>
+            <p><strong>Schedule:</strong> Tue–Thu | 1:30 PM</p>
+            <button class="btn-sm">View Students</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= ATTENDANCE ================= -->
+<section id="attendance" class="view-section">
+    <div class="page-header"><h2>Mark Attendance</h2></div>
+
+    <div class="card">
+        <table class="datatable">
+            <thead>
+                <tr><th>Roll No</th><th>Name</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>01</td><td>Rahul Sharma</td><td><input type="checkbox" checked> Present</td></tr>
+                <tr><td>02</td><td>Priya Patel</td><td><input type="checkbox" checked> Present</td></tr>
+                <tr><td>03</td><td>Amit Kumar</td><td><input type="checkbox"> Present</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ================= GRADING ================= -->
+<section id="grading" class="view-section">
+    <div class="page-header"><h2>Student Grading</h2></div>
+
+    <div class="card">
+        <table class="datatable">
+            <thead>
+                <tr><th>Student</th><th>Assignment</th><th>Date</th><th>Grade</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Rahul Sharma</td>
+                    <td>Algebra Quiz</td>
+                    <td>Oct 20, 2025</td>
+                    <td><span class="badge-warning">Pending</span></td>
+                    <td><button class="btn-sm" onclick="openModal('gradeModal')">Grade</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+</main>
+
+<!-- ================= MODALS ================= -->
+<div id="assignmentModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>New Assignment</h3>
+            <span class="close-btn" onclick="closeModal('assignmentModal')">&times;</span>
+        </div>
+        <button class="btn-submit" onclick="closeModal('assignmentModal')">Create</button>
+    </div>
+</div>
+
+<div id="gradeModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Enter Grade</h3>
+            <span class="close-btn" onclick="closeModal('gradeModal')">&times;</span>
+        </div>
+        <button class="btn-submit" onclick="closeModal('gradeModal')">Save</button>
+    </div>
+</div>
+
+<script>
+function switchView(id, el) {
+    document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+</script>
+
+</body>
+</html>

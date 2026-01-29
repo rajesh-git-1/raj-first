@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal Console | EduPrime</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="style1.css">
+
+    <style>
+        /* Specific styles for Principal Dashboard */
+        .approval-card { border-left: 4px solid #F59E0B; }
+        .audit-log { font-family: monospace; font-size: 0.85rem; color: #475569; }
+        .log-item { padding: 8px 0; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="ph-fill ph-crown"></i>
+            <span>Abhyaas</span>
+        </div>
+        
+        <nav class="menu">
+            <div class="menu-category">EXECUTIVE</div>
+            <a onclick="switchView('dashboard', this)" class="nav-link active">
+                <i class="ph ph-squares-four"></i> <span>Overview</span>
+            </a>
+            <a onclick="switchView('approvals', this)" class="nav-link">
+                <i class="ph ph-check-square-offset"></i> <span>Approvals Center</span>
+                <span class="badge" style="position:relative; top:0; margin-left:auto;">4</span>
+            </a>
+
+            <div class="menu-category">MANAGEMENT</div>
+            <a onclick="switchView('admins', this)" class="nav-link">
+                <i class="ph ph-user-gear"></i> <span>Manage Admins</span>
+            </a>
+            <a onclick="switchView('teachers', this)" class="nav-link">
+                <i class="ph ph-chart-line-up"></i> <span>Teacher Perf.</span>
+            </a>
+            
+            <div class="menu-category">CONTROL</div>
+            <a onclick="switchView('policies', this)" class="nav-link">
+                <i class="ph ph-gavel"></i> <span>Policies & Rules</span>
+            </a>
+            <a onclick="switchView('reports', this)" class="nav-link">
+                <i class="ph ph-file-text"></i> <span>Master Reports</span>
+            </a>
+            <a onclick="switchView('communication', this)" class="nav-link">
+                <i class="ph ph-megaphone"></i> <span>Broadcast</span>
+            </a>
+        </nav>
+
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=Principal+Head&background=7C3AED&color=fff" alt="Principal">
+            <div>
+                <h4>Dr. A. K. Verma</h4>
+                <p>Principal</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <h3>Principal's Desk</h3>
+            <div class="header-actions">
+                <button class="icon-btn"><i class="ph ph-bell"></i><span class="badge">4</span></button>
+                <button class="icon-btn" onclick="alert('Settings')"><i class="ph ph-gear"></i></button>
+            </div>
+        </header>
+
+        <section id="dashboard" class="view-section active">
+            <div class="page-header">
+                <h2>School Overview</h2>
+                <div style="font-size: 0.9rem; color: #64748B;">Today: <span id="currentDate"></span></div>
+            </div>
+
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-icon primary"><i class="ph ph-student"></i></div>
+                    <h3>Total Strength</h3>
+                    <h1>2,540</h1>
+                </div>
+                <div class="card">
+                    <div class="card-icon success"><i class="ph ph-money"></i></div>
+                    <h3>Fee Collection</h3>
+                    <h1>85%</h1>
+                    <p class="text-success">↑ 5% from last month</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon warning"><i class="ph ph-files"></i></div>
+                    <h3>Pending Approvals</h3>
+                    <h1>4</h1>
+                    <p>Requires Action</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon danger"><i class="ph ph-warning-circle"></i></div>
+                    <h3>Staff Absent</h3>
+                    <h1>3</h1>
+                    <p>Teachers on leave</p>
+                </div>
+            </div>
+
+            <div class="split-view">
+                <div class="card">
+                    <div class="card-header"><h3>🛡️ Admin Activity Log</h3></div>
+                    <div class="audit-log">
+                        <div class="log-item">
+                            <span><b>Admin01</b> modified Student #ST-202 fee status.</span>
+                            <span class="text-danger">10m ago</span>
+                        </div>
+                        <div class="log-item">
+                            <span><b>Accountant</b> generated Fee Report.</span>
+                            <span>1h ago</span>
+                        </div>
+                        <div class="log-item">
+                            <span><b>Admin02</b> added 5 new inventory items.</span>
+                            <span>2h ago</span>
+                        </div>
+                        <div class="log-item">
+                            <span><b>Admin01</b> reset password for Teacher #TC-05.</span>
+                            <span>Yesterday</span>
+                        </div>
+                    </div>
+                    <button class="btn-text mt-20" style="color:var(--primary);">View Full Log</button>
+                </div>
+
+                <div class="card chart-card">
+                    <h3>Financial Overview</h3>
+                    <div class="chart-box"><canvas id="principalChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="approvals" class="view-section">
+            <div class="page-header"><h2>Pending Approvals</h2></div>
+            
+            <div class="grid-container">
+                <div class="card approval-card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span class="badge-warning">Leave Request</span>
+                        <small>Today</small>
+                    </div>
+                    <h3 style="margin-top:10px;">Mrs. Sharma (Maths)</h3>
+                    <p>Requesting 2 days sick leave (Oct 25-26).</p>
+                    <div style="margin-top:15px; display:flex; gap:10px;">
+                        <button class="btn-sm" style="background:var(--success);" onclick="approveAction(this)">Approve</button>
+                        <button class="btn-sm" style="background:var(--danger);" onclick="rejectAction(this)">Reject</button>
+                    </div>
+                </div>
+
+                <div class="card approval-card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span class="badge-warning">Fee Concession</span>
+                        <small>Yesterday</small>
+                    </div>
+                    <h3 style="margin-top:10px;">Student: Rahul (10-A)</h3>
+                    <p>Admin requested 10% waiver due to medical reasons.</p>
+                    <div style="margin-top:15px; display:flex; gap:10px;">
+                        <button class="btn-sm" style="background:var(--success);" onclick="approveAction(this)">Approve</button>
+                        <button class="btn-sm" style="background:var(--danger);" onclick="rejectAction(this)">Reject</button>
+                    </div>
+                </div>
+
+                <div class="card approval-card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span class="badge-warning">New Admission</span>
+                        <small>2 days ago</small>
+                    </div>
+                    <h3 style="margin-top:10px;">Candidate: Arjun K.</h3>
+                    <p>Class 9 admission test cleared. Verify documents?</p>
+                    <div style="margin-top:15px; display:flex; gap:10px;">
+                        <button class="btn-sm" style="background:var(--success);" onclick="approveAction(this)">Confirm</button>
+                        <button class="btn-sm" style="background:var(--danger);" onclick="rejectAction(this)">Hold</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="admins" class="view-section">
+            <div class="page-header">
+                <h2>Admin Management</h2>
+                <button class="btn-primary" onclick="openModal('addAdminModal')">+ Create Admin Account</button>
+            </div>
+            
+            <div class="card">
+                <table class="datatable">
+                    <thead><tr><th>Name</th><th>Role</th><th>Permissions</th><th>Last Active</th><th>Action</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td><b>Mr. Rajesh</b></td>
+                            <td>Super Admin</td>
+                            <td>Full Access</td>
+                            <td><span class="badge-success">Online</span></td>
+                            <td><button class="btn-sm" style="background:var(--danger);">Block</button></td>
+                        </tr>
+                        <tr>
+                            <td><b>Ms. Sunita</b></td>
+                            <td>Finance Admin</td>
+                            <td>Fees Only</td>
+                            <td>2h ago</td>
+                            <td><button class="btn-sm" style="background:var(--danger);">Block</button></td>
+                        </tr>
+                        <tr>
+                            <td><b>Mr. Ken</b></td>
+                            <td>System Admin</td>
+                            <td>IT/Inventory</td>
+                            <td>Yesterday</td>
+                            <td><button class="btn-sm" style="background:var(--danger);">Block</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="teachers" class="view-section">
+            <div class="page-header"><h2>Teacher Performance Monitoring</h2></div>
+            <div class="card">
+                <table class="datatable">
+                    <thead><tr><th>Teacher</th><th>Subject</th><th>Attendance %</th><th>Class Avg Grade</th><th>Feedback</th><th>Action</th></tr></thead>
+                    <tbody>
+                        <tr><td>Mrs. Sharma</td><td>Maths</td><td><span class="text-success">98%</span></td><td>85% (A)</td><td>Positive</td><td><button class="icon-small"><i class="ph ph-eye"></i></button></td></tr>
+                        <tr><td>Mr. Verma</td><td>Physics</td><td><span class="text-danger">75%</span></td><td>62% (C)</td><td>Needs Imp.</td><td><button class="btn-sm" style="background:var(--warning); color:black;">Warn</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="policies" class="view-section">
+            <div class="page-header"><h2>Policy & Rule Engine</h2></div>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>Fee Structure</h3>
+                    <p>Set tuition fees for the upcoming academic year.</p>
+                    <button class="btn-primary mt-20">Edit Structure</button>
+                </div>
+                <div class="card">
+                    <h3>Attendance Rules</h3>
+                    <p>Current: Minimum 75% required for exams.</p>
+                    <button class="btn-primary mt-20">Modify Rule</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="communication" class="view-section">
+            <div class="page-header"><h2>Official Communication Channel</h2></div>
+            <div class="card">
+                <h3>Broadcast Circular</h3>
+                <form class="mt-20">
+                    <div class="form-group">
+                        <label>Recipient Group</label>
+                        <select>
+                            <option>All Admins</option>
+                            <option>All Teachers</option>
+                            <option>All Students & Parents</option>
+                            <option>Entire School</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" placeholder="e.g. Weather Emergency Holiday">
+                    </div>
+                    <div class="form-group">
+                        <label>Message Content</label>
+                        <input type="text" style="height: 100px;" placeholder="Type your message...">
+                    </div>
+                    <button class="btn-primary" type="button" onclick="alert('Circular Sent Successfully!')">Send Official Notice</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="reports" class="view-section">
+            <div class="page-header"><h2>Master Reports</h2></div>
+            <div class="grid-container">
+                <div class="card"><h3>Fee Summary Report</h3><button class="btn-text">Download PDF</button></div>
+                <div class="card"><h3>Exam Results Analysis</h3><button class="btn-text">Download PDF</button></div>
+                <div class="card"><h3>Inventory Audit</h3><button class="btn-text">Download PDF</button></div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="addAdminModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Create Admin Account</h3>
+                <span class="close-btn" onclick="closeModal('addAdminModal')">&times;</span>
+            </div>
+            <form onsubmit="event.preventDefault(); alert('Admin Created'); closeModal('addAdminModal');">
+                <div class="form-group"><label>Name</label><input type="text" required></div>
+                <div class="form-group"><label>Email</label><input type="email" required></div>
+                <div class="form-group">
+                    <label>Role / Permissions</label>
+                    <select>
+                        <option>Super Admin (Full Access)</option>
+                        <option>Finance Admin (Fees Only)</option>
+                        <option>Academic Admin (Students/Teachers)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Set Date
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Navigation
+        function switchView(viewId, linkElement) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            linkElement.classList.add('active');
+        }
+
+        // Modals
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        window.onclick = function(e) { if(e.target.classList.contains('modal-overlay')) e.target.style.display = 'none'; }
+
+        // Approvals Logic
+        function approveAction(btn) {
+            if(confirm("Are you sure you want to APPROVE this request?")) {
+                btn.closest('.card').style.display = 'none';
+                alert("Request Approved Successfully.");
+                // Update badge count simulation
+                document.querySelector('.menu .badge').innerText = parseInt(document.querySelector('.menu .badge').innerText) - 1;
+            }
+        }
+
+        function rejectAction(btn) {
+            if(confirm("Reject this request?")) {
+                btn.closest('.card').style.display = 'none';
+                alert("Request Rejected.");
+                document.querySelector('.menu .badge').innerText = parseInt(document.querySelector('.menu .badge').innerText) - 1;
+            }
+        }
+
+        // Chart
+        const ctx = document.getElementById('principalChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Fees Collected', 'Expenses', 'Pending Dues'],
+                datasets: [{
+                    data: [65, 20, 15],
+                    backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPrime Enterprise | Full Admin Console</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="style1.css">
+    
+    <style>
+        /* Extra styles for the Inventory Form */
+        .inventory-form { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; align-items: end; }
+        .inventory-status { font-weight: bold; padding: 5px 10px; border-radius: 5px; font-size: 0.85rem; }
+        .status-good { background: #dcfce7; color: #166534; }
+        .status-low { background: #fee2e2; color: #991b1b; }
+        
+        /* Password Reset Card */
+        .password-card { border-left: 4px solid #f59e0b; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="ph-fill ph-graduation-cap"></i>
+            <span>Abhyaas</span>
+        </div>
+        
+        <nav class="menu">
+            <div class="menu-category">CORE</div>
+            <a href="#" class="nav-link active" onclick="switchView('dashboard', this)">
+                <i class="ph ph-squares-four"></i> <span>Smart Dashboard</span>
+            </a>
+            <a href="#" class="nav-link" onclick="switchView('students', this)">
+                <i class="ph ph-student"></i> <span>Student Lifecycle</span>
+            </a>
+            <a href="#" class="nav-link" onclick="switchView('teachers', this)">
+                <i class="ph ph-chalkboard-teacher"></i> <span>Teachers & HR</span>
+            </a>
+            
+            <div class="menu-category">ADMINISTRATION</div>
+            <a href="#" class="nav-link" onclick="switchView('attendance', this)">
+                <i class="ph ph-calendar-check"></i> <span>Attendance</span>
+            </a>
+            <a href="#" class="nav-link" onclick="switchView('fees', this)">
+                <i class="ph ph-currency-dollar"></i> <span>Fees & Finance</span>
+            </a>
+            <a href="#" class="nav-link" onclick="switchView('academic', this)">
+                <i class="ph ph-exam"></i> <span>Academics & Exams</span>
+            </a>
+
+            <div class="menu-category">FACILITY</div>
+            <a href="#" class="nav-link" onclick="switchView('inventory', this)">
+                <i class="ph ph-warehouse"></i> <span>Inventory</span>
+            </a>
+            
+            <div class="menu-category">SYSTEM</div>
+            <a href="#" class="nav-link" onclick="switchView('communication', this)">
+                <i class="ph ph-broadcast"></i> <span>Communication</span>
+            </a>
+            <a href="#" class="nav-link" onclick="switchView('security', this)">
+                <i class="ph ph-shield-check"></i> <span>Security & Roles</span>
+            </a>
+        </nav>
+
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4F46E5&color=fff" alt="Admin">
+            <div>
+                <h4>Principal</h4>
+                <p>Admin Access</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="search-bar">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn"><i class="ph ph-bell"></i><span class="badge">3</span></button>
+                <button class="icon-btn" onclick="switchView('security', null)"><i class="ph ph-gear"></i></button>
+            </div>
+        </header>
+
+        <section id="dashboard" class="view-section active">
+            <div class="page-header">
+                <h2>Overview</h2>
+                <div class="date-display">Today: <span id="currentDate"></span></div>
+            </div>
+
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-icon primary"><i class="ph ph-student"></i></div>
+                    <div class="card-info">
+                        <h3>Total Students</h3>
+                        <h1 id="dashStudentCount">2,540</h1>
+                        <p>Active Enrollments</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon success"><i class="ph ph-chalkboard-teacher"></i></div>
+                    <div class="card-info">
+                        <h3>Total Teachers</h3>
+                        <h1 id="dashTeacherCount">48</h1>
+                        <p>Faculty Members</p>
+                    </div>
+                </div>
+                <div class="card alert-card">
+                    <div class="card-icon warning"><i class="ph ph-clock-countdown"></i></div>
+                    <div class="card-info">
+                        <h3>Late Fee Alerts</h3>
+                        <h1>18</h1>
+                        <p>Students overdue > 7 days</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon danger"><i class="ph ph-users-three"></i></div>
+                    <div class="card-info">
+                        <h3>Absent Today</h3>
+                        <h1>32</h1>
+                        <p>Students & 2 Teachers</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="split-view">
+                <div class="card chart-card">
+                    <div class="card-header"><h3>Fee Collection Trend</h3></div>
+                    <div class="chart-box"><canvas id="dashboardChart"></canvas></div>
+                </div>
+                <div class="card list-card">
+                    <div class="card-header"><h3>Recent Activities</h3></div>
+                    <ul class="activity-list">
+                        <li><i class="ph ph-receipt"></i> <span>Invoice #4022 paid by <b>John Doe</b></span> <span class="time">2m ago</span></li>
+                        <li><i class="ph ph-user"></i> <span>New Admission: <b>Sarah Smith</b> (Class 5)</span> <span class="time">1h ago</span></li>
+                        <li><i class="ph ph-warning"></i> <span>Server Backup Completed</span> <span class="time">3h ago</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="students" class="view-section">
+            <div class="page-header">
+                <h2>Student Lifecycle Management</h2>
+                <button class="btn-primary" onclick="openModal('studentModal')">+ Add New Student</button>
+            </div>
+            <div class="card">
+                <table class="datatable">
+                    <thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Parent Contact</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody id="studentTableBody">
+                        <tr>
+                            <td>#ST-202</td><td>Alice Johnson</td><td>10-A</td><td>+1 987 654 3210</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td><button class="icon-small"><i class="ph ph-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="teachers" class="view-section">
+            <div class="page-header">
+                <h2>Teacher Productivity & HR</h2>
+                <button class="btn-primary" onclick="openModal('teacherModal')">+ Add Teacher</button>
+            </div>
+            <div class="card">
+                <table class="datatable">
+                    <thead><tr><th>ID</th><th>Name</th><th>Subject</th><th>Phone</th><th>Action</th></tr></thead>
+                    <tbody id="teacherTableBody">
+                        <tr>
+                            <td>#TC-001</td><td>Mr. Robert Smith</td><td>Mathematics</td><td>+1 987 654 321</td>
+                            <td><button class="icon-small"><i class="ph ph-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="attendance" class="view-section">
+            <div class="page-header">
+                <h2>Attendance Automation</h2>
+                <button class="btn-primary">Mark Today's Attendance</button>
+            </div>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>Overall Attendance</h3>
+                    <h1 class="text-success">94.5%</h1>
+                </div>
+                <div class="card">
+                    <h3>Chronic Absentees</h3>
+                    <h1 class="text-danger">5</h1>
+                </div>
+            </div>
+        </section>
+
+        <section id="fees" class="view-section">
+            <div class="page-header"><h2>Fee & Finance Center</h2></div>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>Total Due</h3>
+                    <h1 class="text-danger">45,000</h1>
+                </div>
+                <div class="card">
+                    <h3>Collected</h3>
+                    <h1 class="text-success">22,400</h1>
+                </div>
+            </div>
+        </section>
+
+        <section id="academic" class="view-section">
+            <div class="page-header"><h2>Academic Planning</h2></div>
+            <div class="card">
+                <h3>Exam Schedule</h3>
+                <table class="datatable">
+                    <thead><tr><th>Date</th><th>Subject</th><th>Class</th><th>Time</th></tr></thead>
+                    <tbody>
+                        <tr><td>Oct 25, 2025</td><td>Physics</td><td>10-A</td><td>09:00 AM</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="inventory" class="view-section">
+            <div class="page-header">
+                <h2>Infrastructure & Inventory</h2>
+                <span class="badge badge-success">System Operational</span>
+            </div>
+
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-icon primary"><i class="ph ph-projector-screen"></i></div>
+                    <h3>Projectors</h3>
+                    <h1>28</h1>
+                    <p class="inventory-status status-good">Condition: Good</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon success"><i class="ph ph-desktop"></i></div>
+                    <h3>Computers</h3>
+                    <h1>156</h1>
+                    <p class="inventory-status status-good">Lab A & B</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon warning"><i class="ph ph-books"></i></div>
+                    <h3>Library Books</h3>
+                    <h1>8,247</h1>
+                    <p class="inventory-status status-good">Audit Pending</p>
+                </div>
+            </div>
+
+            <div class="card mt-20" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                <h3 style="margin-bottom: 15px; color: #334155;">📥 Add New Stock / Asset</h3>
+                <div class="inventory-form">
+                    <div class="form-group">
+                        <label>Select Item Type</label>
+                        <select id="invItemType">
+                            <option value="Projector">Projector</option>
+                            <option value="Computer">Computer</option>
+                            <option value="Desk">Student Desk</option>
+                            <option value="Chair">Chair</option>
+                            <option value="Whiteboard">Whiteboard</option>
+                            <option value="Microscope">Microscope</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="invQty" placeholder="0" min="1">
+                    </div>
+                    <button class="btn-primary" onclick="addNewInventory()">
+                        <i class="ph ph-plus-circle"></i> Add to Inventory
+                    </button>
+                </div>
+            </div>
+
+            <div class="card mt-20">
+                <div class="card-header"><h3>Current Asset List</h3></div>
+                <table class="datatable">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Total Quantity</th>
+                            <th>Last Updated</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <tr>
+                            <td>Classroom Desks</td>
+                            <td>Furniture</td>
+                            <td>1,250</td>
+                            <td>Oct 01, 2025</td>
+                            <td><span class="badge badge-success">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>Lab Microscopes</td>
+                            <td>Lab Equipment</td>
+                            <td>45</td>
+                            <td>Sep 15, 2025</td>
+                            <td><span class="badge badge-warning">Maintenance</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="communication" class="view-section">
+            <div class="page-header"><h2>Communication Center</h2></div>
+            <div class="card">
+                <h3>Send Announcement</h3>
+                <form style="margin-top:15px;">
+                    <textarea style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" rows="3" placeholder="Type message..."></textarea>
+                    <button class="btn-primary" style="margin-top:10px;">Send SMS/Email</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="security" class="view-section">
+            <div class="page-header"><h2>Security & User Roles</h2></div>
+            
+            <div class="grid-container">
+                <div class="card" style="grid-column: span 2;">
+                    <h3>Active System Users</h3>
+                    <table class="datatable">
+                        <thead><tr><th>User</th><th>Role</th><th>Last Login</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Admin User</td><td>Principal</td><td>Just Now</td><td><span class="badge badge-success">Active</span></td></tr>
+                            <tr><td>Sarah Accounts</td><td>Accountant</td><td>2h ago</td><td><span class="badge badge-success">Active</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card password-card">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background: #fffbeb; color: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 24px;">
+                            <i class="ph ph-lock-key-open"></i>
+                        </div>
+                        <h3 style="margin-top: 10px;">Password Management</h3>
+                        <p style="font-size: 12px; color: #666;">Reset lost passwords for staff or students.</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select User Role</label>
+                        <select id="resetRole">
+                            <option>Student</option>
+                            <option>Teacher</option>
+                            <option>Admin Staff</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Enter ID / Username</label>
+                        <input type="text" id="resetUsername" placeholder="e.g. ST-202">
+                    </div>
+                    
+                    <button class="btn-primary" style="width: 100%; background: #f59e0b;" onclick="resetUserPassword()">
+                        <i class="ph ph-arrow-counter-clockwise"></i> Reset Password
+                    </button>
+                    <div style="margin-top: 10px; text-align: center;">
+                        <a href="#" style="font-size: 12px; color: #2563eb;">Send Reset Link via Email</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="studentModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Add New Student</h3>
+                <span class="close-btn" onclick="closeModal('studentModal')">&times;</span>
+            </div>
+            <form onsubmit="handleAddStudent(event)">
+                <div class="form-group"><label>Name</label><input type="text" id="sName" required></div>
+                <div class="form-group"><label>Class</label><select id="sClass"><option>10-A</option><option>9-B</option></select></div>
+                <div class="form-group"><label>Phone</label><input type="text" id="sPhone" required></div>
+                <button type="submit" class="btn-submit">Save Student</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="teacherModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Add New Teacher</h3>
+                <span class="close-btn" onclick="closeModal('teacherModal')">&times;</span>
+            </div>
+            <form onsubmit="handleAddTeacher(event)">
+                <div class="form-group"><label>Name</label><input type="text" id="tName" required></div>
+                <div class="form-group"><label>Subject</label><input type="text" id="tSubject" required></div>
+                <div class="form-group"><label>Phone</label><input type="text" id="tPhone" required></div>
+                <button type="submit" class="btn-submit">Save Teacher</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script1.js"></script>
+</body>
+</html>

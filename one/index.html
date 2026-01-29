@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- CORE RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body { 
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #f8fafc; /* Light clean background for the page */
+            color: #333;
+        }
+
+        a { text-decoration: none; cursor: pointer; }
+        
+        /* --- NAVIGATION BAR --- */
+        nav { 
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        .nav-container { max-width: 1300px; margin: 0 auto; padding: 0 20px; height: 80px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo { font-size: 24px; font-weight: 800; color: #2563eb; display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 50px; width: auto; object-fit: contain; } 
+        .logo span { color: #1e293b; font-weight: 700; font-size: 18px; display: block; line-height: 1.2; }
+        
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a.link { color: #334155; font-weight: 600; font-size: 15px; transition: 0.3s; position: relative; }
+        .nav-links a.link:hover { color: #2563eb; }
+        
+        .btn-login { background-color: #2563eb; color: white !important; padding: 10px 25px; border-radius: 50px; transition: 0.3s; font-size: 15px; font-weight: 600; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+        .btn-login:hover { background-color: #1d4ed8; transform: translateY(-2px); }
+        
+        .contact-link { color: #334155; font-weight: 600; font-size: 15px; margin-left: 10px; border-left: 2px solid #e2e8f0; padding-left: 20px; }
+
+        /* --- HOME SECTION (Displays Image As Is) --- */
+        .hero { 
+            width: 100%;
+            padding: 0; /* No padding so image touches edges */
+            background: transparent;
+            text-align: center;
+        }
+        
+        /* THIS STYLE KEEPS THE IMAGE PERFECT */
+        .main-school-image {
+            width: 100%;       /* Fits the width of the screen */
+            height: auto;      /* adjusts height automatically to keep original shape */
+            display: block;    /* removes bottom gap */
+            max-height: 90vh;  /* Optional: prevents it from being too tall on huge screens */
+            object-fit: contain; /* Ensures the whole image is visible */
+        }
+        
+        /* --- OTHER SECTIONS --- */
+        .section { display: none; padding: 40px 20px 100px; max-width: 1200px; margin: 0 auto; }
+        .section.active { display: block; }
+
+        .section-title { 
+            font-size: 32px; 
+            font-weight: 800; 
+            text-align: center; 
+            margin-bottom: 40px; 
+            color: #1e293b; 
+            position: relative; 
+        }
+        .section-title::after { content: ''; display: block; width: 60px; height: 4px; background: #2563eb; margin: 10px auto 0; border-radius: 2px; }
+
+        /* --- CARDS & TABLES --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        
+        .card { 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            transition: all 0.3s ease; 
+            text-align: center; 
+            position: relative; 
+            overflow: hidden; 
+            border: 1px solid #e2e8f0;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); border-color: #2563eb; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #2563eb; transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+        .card:hover::before { transform: scaleX(1); }
+        
+        .card i { font-size: 45px; margin-bottom: 20px; display: inline-block; transition: 0.3s; }
+        .card h3 { font-size: 20px; margin-bottom: 12px; color: #1e293b; font-weight: 700; }
+        .card p { color: #64748b; font-size: 15px; line-height: 1.6; }
+        
+        .text-blue { color: #2563eb; } .text-green { color: #10b981; } .text-orange { color: #f59e0b; } .text-purple { color: #7e22ce; }
+        .notice-card { text-align: left; border-left: 4px solid transparent; }
+        .notice-card.urgent { border-left-color: #dc2626; } .notice-card.general { border-left-color: #2563eb; } .notice-card.event { border-left-color: #10b981; }
+
+        .fee-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .fee-table th { background: #2563eb; color: white; padding: 18px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 14px; }
+        .fee-table td { padding: 15px 18px; border-bottom: 1px solid #e2e8f0; color: #334155; font-weight: 500; }
+        .fee-table tr:hover { background-color: #f8fafc; }
+
+        .step-card { text-align: left; padding-left: 25px; }
+        .step-number { font-size: 40px; font-weight: 900; color: #e2e8f0; position: absolute; top: 15px; right: 20px; }
+        .step-title { color: #2563eb; font-weight: 800; margin-bottom: 10px; font-size: 20px; }
+
+        /* --- MODALS --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal.show { opacity: 1; }
+        .modal-content { background: white; width: 90%; max-width: 600px; padding: 40px; border-radius: 20px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.9); transition: transform 0.3s; }
+        .modal.show .modal-content { transform: scale(1); }
+        .close { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: #94a3b8; }
+        .close:hover { color: #ef4444; }
+
+        /* --- FORM ELEMENTS --- */
+        .role-option { display: flex; align-items: center; gap: 20px; padding: 20px; border: 2px solid #f1f5f9; border-radius: 12px; margin-bottom: 15px; cursor: pointer; transition: all 0.2s; }
+        .role-option:hover { border-color: #2563eb; background: #eff6ff; }
+        .role-icon { width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #334155; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; outline: none; background: #f8fafc; transition: 0.3s; }
+        .form-group input:focus { border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .login-submit-btn { width: 100%; background: #2563eb; color: white; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .login-submit-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
+        
+        .contact-row { display: flex; align-items: center; margin-bottom: 20px; color: #475569; padding: 15px; border-radius: 10px; background: #f8fafc; }
+        .contact-row i { width: 40px; font-size: 20px; color: #2563eb; }
+        
+        .hidden { display: none !important; }
+        .form-section-title { font-size: 16px; font-weight: 700; color: #2563eb; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; margin-top: 25px; }
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <img src="abyass.jpeg" alt="Abhyaas Logo">
+                <div class="logo-text-group">
+                    ABHYAAS 
+                    <span>International School</span>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a class="link" onclick="showSection('home')">Home</a>
+                <a class="link" onclick="showSection('admissions')">Admissions</a>
+                <a class="link" onclick="showSection('fee')">Fee Structure</a>
+                <a class="link" onclick="showSection('roles')">Roles</a>
+                <a class="link" onclick="showSection('notices')">Notices</a>
+                <a onclick="showLoginModal()" class="btn-login">Login</a>
+                <a onclick="showContactModal()" class="contact-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero section active">
+        <img src="abyass.jpeg" alt="School Banner" class="main-school-image">
+    </section>
+
+    <section id="admissions" class="section">
+        <h2 class="section-title">Admission Process</h2>
+        
+        <div style="background: white; padding: 40px; border-radius: 16px; text-align: center; margin-bottom: 50px; box-shadow: 0 15px 40px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 24px;">Admissions Open for 2025-26</h3>
+            <p style="margin-bottom: 25px; color: #64748b; font-size: 16px;">Secure your child's future with Abhyaas International School.</p>
+            <button class="login-submit-btn" style="width: auto; padding: 14px 50px; font-size: 18px; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);" onclick="showApplicationModal()">
+                <i class="fas fa-pen-fancy" style="margin-right: 10px;"></i> Fill Application Form
+            </button>
+        </div>
+
+        <div class="grid">
+            <div class="card step-card">
+                <span class="step-number">01</span>
+                <div class="step-title">Online Enquiry</div>
+                <p>Fill out the online application form above or visit the school office.</p>
+            </div>
+            <div class="card step-card">
+                <span class="step-number">02</span>
+                <div class="step-title">School Visit</div>
+                <p>Schedule a campus tour and interaction session with counselors.</p>
+            </div>
+            <div class="card step-card">
+                <span class="step-number">03</span>
+                <div class="step-title">Assessment</div>
+                <p>Students from Grade 1 onwards appear for a proficiency test.</p>
+            </div>
+            <div class="card step-card">
+                <span class="step-number">04</span>
+                <div class="step-title">Submission</div>
+                <p>Submit documents, pay the fee, and confirm the admission.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="fee" class="section">
+        <h2 class="section-title">Academic Fee Structure</h2>
+        <div style="overflow-x: auto;">
+            <table class="fee-table">
+                <thead>
+                    <tr>
+                        <th>Grade / Class</th>
+                        <th>Term 1 (Apr-Jul)</th>
+                        <th>Term 2 (Aug-Nov)</th>
+                        <th>Term 3 (Dec-Mar)</th>
+                        <th>Total (Per Annum)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pre-Primary</strong></td>
+                        <td>₹ 15,000</td>
+                        <td>₹ 15,000</td>
+                        <td>₹ 15,000</td>
+                        <td><strong>₹ 45,000</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Grade 1 - 5</strong></td>
+                        <td>₹ 20,000</td>
+                        <td>₹ 20,000</td>
+                        <td>₹ 20,000</td>
+                        <td><strong>₹ 60,000</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Grade 6 - 8</strong></td>
+                        <td>₹ 25,000</td>
+                        <td>₹ 25,000</td>
+                        <td>₹ 25,000</td>
+                        <td><strong>₹ 75,000</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Grade 9 - 10</strong></td>
+                        <td>₹ 30,000</td>
+                        <td>₹ 30,000</td>
+                        <td>₹ 30,000</td>
+                        <td><strong>₹ 90,000</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 20px; font-size: 15px; color: #64748b; text-align:center;">* Note: Admission fees, Transport fees, and Books/Uniform costs are separate.</p>
+        </div>
+    </section>
+
+    <section id="roles" class="section">
+        <h2 class="section-title">Select Your Dashboard</h2>
+        <div class="grid">
+            <div class="card" onclick="showLoginModal()">
+                <i class="fas fa-user-cog text-blue"></i>
+                <h3>Admin</h3>
+                <p>Full system control, user management, and reporting.</p>
+            </div>
+            <div class="card" onclick="showLoginModal()">
+                <i class="fas fa-user-tie text-purple"></i>
+                <h3>Principal</h3>
+                <p>Strategic oversight, staff monitoring, and insights.</p>
+            </div>
+            <div class="card" onclick="showLoginModal()">
+                <i class="fas fa-chalkboard-teacher text-green"></i>
+                <h3>Teacher</h3>
+                <p>Manage attendance, grade books, and lesson plans.</p>
+            </div>
+            <div class="card" onclick="showLoginModal()">
+                <i class="fas fa-user-graduate text-orange"></i>
+                <h3>Student</h3>
+                <p>Access timetables, results, and e-learning resources.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="notices" class="section">
+        <h2 class="section-title">Latest Notices</h2>
+        <div class="grid">
+            <div class="card notice-card urgent">
+                <span style="background:#fee2e2; color:#dc2626; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold;">Important</span>
+                <h3 style="margin-top:15px;">Mid-Term Exams</h3>
+                <p>Examinations begin January 10th. Please collect admit cards from the office.</p>
+            </div>
+            
+            <div class="card notice-card general">
+                <span style="background:#dbeafe; color:#2563eb; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold;">General</span>
+                <h3 style="margin-top:15px;">Winter Break</h3>
+                <p>School closed from Dec 24th to Jan 5th. Happy Holidays to all students and staff!</p>
+            </div>
+
+            <div class="card notice-card event">
+                <span style="background:#dcfce7; color:#166534; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold;">Event</span>
+                <h3 style="margin-top:15px;">Annual Sports Day</h3>
+                <p>Join us on February 15th for the Annual Sports Meet. Registration open for all students.</p>
+            </div>
+
+            <div class="card notice-card">
+                <span style="background:#ffedd5; color:#9a3412; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold;">Deadline</span>
+                <h3 style="margin-top:15px;">Fee Submission</h3>
+                <p>Last date for the 2nd Term Fee submission is Jan 30th. Please pay to avoid late fees.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            
+            <div id="roleSelectionView">
+                <h2 style="margin-bottom: 25px; text-align: center;">Select Your Role</h2>
+                
+                <div class="role-option" onclick="showAdminForm('Admin')">
+                    <div class="role-icon" style="color:#2563eb;"><i class="fas fa-user-cog"></i></div>
+                    <div>
+                        <h3>Admin</h3>
+                        <p style="font-size:12px; color:#666; margin:0;">System Access</p>
+                    </div>
+                </div>
+
+                <div class="role-option" onclick="showAdminForm('Principal')">
+                    <div class="role-icon" style="color:#7e22ce;"><i class="fas fa-user-tie"></i></div>
+                    <div>
+                        <h3>Principal</h3>
+                        <p style="font-size:12px; color:#666; margin:0;">Head of School</p>
+                    </div>
+                </div>
+
+                <div class="role-option" onclick="showAdminForm('Teacher')">
+                    <div class="role-icon" style="color:#10b981;"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div>
+                        <h3>Teacher</h3>
+                        <p style="font-size:12px; color:#666; margin:0;">Staff Access</p>
+                    </div>
+                </div>
+
+                <div class="role-option" onclick="showAdminForm('Student')">
+                    <div class="role-icon" style="color:#f59e0b;"><i class="fas fa-user-graduate"></i></div>
+                    <div>
+                        <h3>Student</h3>
+                        <p style="font-size:12px; color:#666; margin:0;">Student Portal</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminLoginView" class="hidden">
+                <div class="back-link" onclick="backToRoles()"><i class="fas fa-arrow-left"></i> Back to Roles</div>
+                <h2 style="margin-bottom: 10px;" id="loginTitle">Admin Login</h2>
+                <p style="margin-bottom: 25px; color:#64748b; font-size:14px;">Secure access for authorized personnel only.</p>
+                
+                <form onsubmit="handleAdminLogin(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="adminUser" placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="adminPass" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="login-submit-btn">Login to Dashboard</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeContactModal()">&times;</span>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 60px; height: 60px; background: #eff6ff; color: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px;">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h2 style="color: #1e293b;">Get in Touch</h2>
+                <p style="color: #64748b; font-size: 14px;">We are here to assist you with any inquiries.</p>
+            </div>
+            
+            <div class="contact-row">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <strong style="display:block; font-size:14px;">Visit Us</strong>
+                    <span style="font-size:14px;">123 Education Lane, Knowledge City</span>
+                </div>
+            </div>
+            <div class="contact-row">
+                <i class="fas fa-phone-alt"></i>
+                <div>
+                    <strong style="display:block; font-size:14px;">Call Us</strong>
+                    <span style="font-size:14px;">+91 98765 43210</span>
+                </div>
+            </div>
+            <div class="contact-row">
+                <i class="fas fa-envelope"></i>
+                <div>
+                    <strong style="display:block; font-size:14px;">Email Us</strong>
+                    <span style="font-size:14px;">admissions@abhyaas.edu.in</span>
+                </div>
+            </div>
+
+            <button onclick="closeContactModal()" class="login-submit-btn" style="margin-top: 15px; background-color: #f1f5f9; color: #333;">Close Window</button>
+        </div>
+    </div>
+
+    <div id="applicationModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close" onclick="closeApplicationModal()">&times;</span>
+            <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px; display:flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="color: #1e293b; margin-bottom:5px;">Application Form</h2>
+                    <p style="color: #64748b; font-size: 14px;">Abhyasa International School - Academic Year 2025-26</p>
+                </div>
+                <img src="abyass.jpeg" style="height: 50px; opacity: 0.8; object-fit: contain;">
+            </div>
+            
+            <form onsubmit="handleApplicationSubmit(event)">
+                <div class="form-section-title">1. Student Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" placeholder="First Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Surname</label>
+                        <input type="text" placeholder="Surname" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Admission Sought for Grade</label>
+                    <select required>
+                        <option value="">Select Grade</option>
+                        <option value="Grade 4">Grade 4</option>
+                        <option value="Grade 5">Grade 5</option>
+                        <option value="Grade 6">Grade 6</option>
+                        <option value="Grade 7">Grade 7</option>
+                        <option value="Grade 8">Grade 8</option>
+                        <option value="Grade 9">Grade 9</option>
+                        <option value="Grade 11">Grade 11 (ISC)</option>
+                    </select>
+                </div>
+
+                <div class="form-section-title">2. Parent / Guardian Details</div>
+                <div class="form-group">
+                    <label>Father's Name</label>
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Mother's Name</label>
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email ID</label>
+                        <input type="email" placeholder="Valid Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+91 XXXXX XXXXX" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Residential Address</label>
+                    <textarea rows="2" style="width:100%; padding:14px; border:2px solid #e2e8f0; border-radius:10px; resize:none;" placeholder="Complete Address"></textarea>
+                </div>
+
+                <div class="form-section-title">3. Previous Education</div>
+                <div class="form-group">
+                    <label>Name of Previous School</label>
+                    <input type="text" placeholder="School Name & City">
+                </div>
+                <div class="form-group">
+                    <label>Second Language Opted</label>
+                    <select>
+                        <option value="Hindi">Hindi</option>
+                        <option value="Telugu">Telugu</option>
+                        <option value="Sanskrit">Sanskrit</option>
+                        <option value="French">French</option>
+                    </select>
+                </div>
+
+                <div style="background: #fef2f2; border: 1px solid #fee2e2; padding: 15px; border-radius: 8px; font-size: 13px; color: #b91c1c; margin-bottom: 20px;">
+                    <i class="fas fa-info-circle"></i> <strong>Note:</strong> Submitting this form does not guarantee admission. Selection is based on the Aptitude Test.
+                </div>
+
+                <button type="submit" class="login-submit-btn">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- GLOBAL LOGIC ---
+        let currentRole = 'Admin'; 
+
+        // --- NAVIGATION & ROLE LOGIC ---
+        function showAdminForm(roleName) {
+            currentRole = roleName; 
+            document.getElementById('roleSelectionView').classList.add('hidden');
+            const formView = document.getElementById('adminLoginView');
+            formView.classList.remove('hidden');
+            formView.style.animation = 'slideUp 0.3s ease-out';
+            document.getElementById('loginTitle').innerText = roleName + " Login"; 
+        }
+
+        function backToRoles() {
+            document.getElementById('roleSelectionView').classList.remove('hidden');
+            document.getElementById('adminLoginView').classList.add('hidden');
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('adminUser').value;
+            const p = document.getElementById('adminPass').value;
+
+            if(u && p) {
+                const btn = e.target.querySelector('button');
+                btn.innerText = 'Verifying...';
+                setTimeout(() => {
+                    if (currentRole === 'Teacher') window.location.href = "teacher.html";
+                    else if (currentRole === 'Student') window.location.href = "student1.html";
+                    else if (currentRole === 'Principal') window.location.href = "principal.html";
+                    else window.location.href = "admin.html";
+                }, 1000); 
+            } else {
+                alert("Please fill all fields");
+            }
+        }
+
+        // --- APPLICATION LOGIC ---
+        function showApplicationModal() {
+            const modal = document.getElementById('applicationModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeApplicationModal() {
+            const modal = document.getElementById('applicationModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        function handleApplicationSubmit(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Submitting...';
+            btn.style.opacity = '0.7';
+            setTimeout(() => {
+                alert("Application Submitted Successfully!");
+                closeApplicationModal();
+                btn.innerText = originalText;
+                btn.style.opacity = '1';
+                e.target.reset();
+            }, 1500);
+        }
+
+        // --- UI NAVIGATION ---
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => {
+                s.classList.remove('active');
+                s.style.display = 'none'; 
+            });
+            const activeSection = document.getElementById(id);
+            activeSection.style.display = 'block'; 
+            setTimeout(() => {
+                activeSection.classList.add('active');
+                animateElements(activeSection);
+            }, 10);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function animateElements(section) {
+            const cards = section.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animation = 'none';
+                card.offsetHeight; 
+                card.style.animation = `slideUp 0.5s ease-out forwards ${index * 0.1}s`;
+                card.style.opacity = '0'; 
+            });
+        }
+
+        // --- MODAL HELPERS ---
+        function showLoginModal() {
+            backToRoles(); 
+            const modal = document.getElementById('loginModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+        function showContactModal() {
+            const modal = document.getElementById('contactModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        function closeContactModal() {
+            const modal = document.getElementById('contactModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('loginModal')) closeLoginModal();
+            if (event.target == document.getElementById('contactModal')) closeContactModal();
+            if (event.target == document.getElementById('applicationModal')) closeApplicationModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+           animateElements(document.getElementById('home')); 
+        });
+    </script>
+</body>
+</html>

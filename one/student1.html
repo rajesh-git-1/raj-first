@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | EduPrime</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="ph-fill ph-graduation-cap"></i> <span>Abhyaas</span>
+        </div>
+        <nav class="menu">
+            <div class="menu-category">ACADEMIC</div>
+            <a onclick="switchView('dashboard', this)" class="nav-link active"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a onclick="switchView('timetable', this)" class="nav-link"><i class="ph ph-calendar"></i> Timetable</a>
+            <a onclick="switchView('assignments', this)" class="nav-link"><i class="ph ph-books"></i> Assignments</a>
+            <a onclick="switchView('fees', this)" class="nav-link"><i class="ph ph-credit-card"></i> Fees</a>
+        </nav>
+        <div class="user-profile">
+            <img src="https://ui-avatars.com/api/?name=Rahul+Sharma&background=F59E0B&color=fff" alt="User">
+            <div>
+                <h4>Rahul Sharma</h4>
+                <p>Class 10-B</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <h3>My Portal</h3>
+            <div class="header-actions">
+                <button class="icon-btn"><i class="ph ph-bell"></i><span class="badge">5</span></button>
+            </div>
+        </header>
+
+        <section id="dashboard" class="view-section active">
+            <div class="page-header"><h2>Overview</h2></div>
+            <div class="grid-container">
+                <div class="card">
+                    <div class="card-icon primary"><i class="ph ph-chart-bar"></i></div>
+                    <h3>Attendance</h3>
+                    <h1>92%</h1>
+                    <div class="progress-bar"><div class="fill" style="width:92%"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-icon warning"><i class="ph ph-clock"></i></div>
+                    <h3>Pending Tasks</h3>
+                    <h1>3</h1>
+                    <p>Assignments due this week</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon success"><i class="ph ph-trophy"></i></div>
+                    <h3>Avg. Grade</h3>
+                    <h1>A-</h1>
+                    <p>Top 10% of class</p>
+                </div>
+            </div>
+
+            <div class="split-view">
+                <div class="card">
+                    <h3>Performance Trends </h3>
+                    <div class="chart-box"><canvas id="studentChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3>Notice Board</h3>
+                    <ul class="activity-list">
+                        <li><i class="ph ph-megaphone"></i> <span>Sports Day on Nov 5</span> <span class="time">1d ago</span></li>
+                        <li><i class="ph ph-warning-circle text-danger"></i> <span>Fee Due: Oct 30</span> <span class="time">2d ago</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="timetable" class="view-section">
+            <div class="page-header"><h2>My Weekly Timetable</h2></div>
+            <div class="card">
+                <table class="datatable">
+                    <thead><tr><th>Time</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr></thead>
+                    <tbody>
+                        <tr><td>09:00</td><td>Maths</td><td>Physics</td><td>Maths</td><td>English</td><td>Sports</td></tr>
+                        <tr><td>10:00</td><td>Physics</td><td>Chem</td><td>History</td><td>Maths</td><td>Library</td></tr>
+                        <tr><td>11:00</td><td>Eng</td><td>Comp Sci</td><td>Chem</td><td>Physics</td><td>Maths</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="assignments" class="view-section">
+            <div class="page-header"><h2>Assignments & Homework </h2></div>
+            <div class="card">
+                <table class="datatable">
+                    <thead><tr><th>Subject</th><th>Topic</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>
+                        <tr><td>Maths</td><td>Algebra Sheet</td><td>Oct 25</td><td><span class="badge-warning">Pending</span></td><td><button class="btn-sm" onclick="openModal('uploadModal')">Submit</button></td></tr>
+                        <tr><td>Physics</td><td>Motion Laws</td><td>Oct 22</td><td><span class="badge-success">Graded (A)</span></td><td><button class="icon-small"><i class="ph ph-eye"></i></button></td></tr>
+                        <tr><td>English</td><td>Essay Writing</td><td>Oct 20</td><td><span class="badge-danger">Overdue</span></td><td><button class="btn-sm" style="background:grey">Closed</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="fees" class="view-section">
+            <div class="page-header"><h2>Fee Status</h2></div>
+            <div class="grid-container">
+                <div class="card alert-card">
+                    <h3 class="text-danger">Amount Due</h3>
+                    <h1>₹12,000</h1>
+                    <p>Term 2 Tuition Fee</p>
+                    <button class="btn-primary mt-20">Pay Online</button>
+                </div>
+                <div class="card">
+                    <h3>Payment History</h3>
+                    <table class="datatable">
+                        <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Aug 01, 2025</td><td>Term 1 Fee</td><td>₹25,000</td><td><span class="badge-success">Paid</span></td></tr>
+                            <tr><td>Jun 15, 2025</td><td>Admission</td><td>₹10,000</td><td><span class="badge-success">Paid</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="uploadModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header"><h3>Submit Assignment</h3><span class="close-btn" onclick="closeModal('uploadModal')">&times;</span></div>
+            <form>
+                <div class="form-group"><label>File Upload</label><input type="file"></div>
+                <div class="form-group"><label>Comments</label><input type="text" placeholder="Optional notes..."></div>
+                <button type="button" class="btn-submit" onclick="closeModal('uploadModal'); alert('Submitted Successfully!')">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function switchView(id, el) {
+            document.querySelectorAll('.view-section').forEach(d => d.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+        }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Chart Initialization
+        const ctx = document.getElementById('studentChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Maths', 'Physics', 'Chem', 'Eng', 'Comp'],
+                datasets: [{
+                    label: 'Marks Obtained',
+                    data: [85, 72, 90, 88, 95],
+                    backgroundColor: '#4F46E5',
+                    borderRadius: 5
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    </script>
+</body>
+</html>
